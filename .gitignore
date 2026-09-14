@@ -1,0 +1,15 @@
+# Python virtual environment
+mygac/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editor / OS files
+.vscode/
+.DS_Store
+Thumbs.db
