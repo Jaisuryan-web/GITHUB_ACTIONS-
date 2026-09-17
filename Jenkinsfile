@@ -4,27 +4,36 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout source code from GitHub repository
                 git branch: 'main', url: 'https://github.com/Jaisuryan-web/GITHUB_ACTIONS-.git'
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Setup & Install Dependencies') {
             steps {
                 bat '''
-                    "C:\\Python311\\python.exe" -m venv venv
+                    python -m venv venv
                     call venv\\Scripts\\activate.bat
-                    pip install --upgrade pip
+                    python -m pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest
                 '''
             }
         }
 
-        stage('Install Dependencies & Run') {
+        stage('Run Billing App') {
             steps {
                 bat '''
                     call venv\\Scripts\\activate.bat
-                    if exist requirements.txt pip install -r requirements.txt
-                    python --version
+                    python billing.py
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat '''
+                    call venv\\Scripts\\activate.bat
+                    pytest test_billing.py
                 '''
             }
         }
@@ -32,7 +41,7 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline execution complete.'
+            cleanWs()
         }
     }
 }
